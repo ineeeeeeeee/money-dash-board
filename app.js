@@ -73,40 +73,32 @@ function updateAnalysis() {
   let total = 0, fixed = 0, variable = 0;
   let categorySum = {};
 
-// 월별 실제 일수 계산 함수 (한 번만 선언)
-function daysInMonth(ym) {
-  const [y, m] = ym.split('-').map(Number);
-  return new Date(y, m, 0).getDate();
-}
+  // 월별 실제 일수 계산
+  const days = daysInMonth(currentMonth);
+  let dailyExpense = Array(days).fill(0);
 
-// updateAnalysis 함수 내에서
-const days = daysInMonth(currentMonth);
-let dailyExpense = Array(days).fill(0);
-
-filtered.forEach(r => {
-  const amount = Number(r['금액(원)']) || 0;
-  const dateStr = r['날짜'];
-  let day = 0;
-  if (dateStr && typeof dateStr === 'string') {
-    // YYYY-MM-DD 형식만 허용
-    const parts = dateStr.split('-');
-    if (parts.length === 3) {
-      day = parseInt(parts[2], 10);
-    }
-  }
-  if (day > 0 && day <= days) {
-    dailyExpense[day - 1] += amount;
-  }
-});
-updateDailyChart(dailyExpense);
-
+  filtered.forEach(r => {
+    const amount = Number(r['금액(원)']) || 0;
+    total += amount;
+    if (r['고정지출 여부'] === 'O') fixed += amount;
     else variable += amount;
     const cate = r['카테고리'];
     if (!categorySum[cate]) categorySum[cate] = 0;
     categorySum[cate] += amount;
-    const day = Number(r['날짜'].split('-')[2]);
-    if (day) dailyExpense[day-1] += amount;
+    // 일별 집계
+    const dateStr = r['날짜'];
+    let day = 0;
+    if (dateStr && typeof dateStr === 'string') {
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        day = parseInt(parts[2], 10);
+      }
+    }
+    if (day > 0 && day <= days) {
+      dailyExpense[day - 1] += amount;
+    }
   });
+
   // 요약 정보 표시
   document.getElementById('totalExpense').textContent = formatCurrency(total);
   document.getElementById('fixedExpense').textContent = formatCurrency(fixed);
@@ -114,9 +106,11 @@ updateDailyChart(dailyExpense);
   // 차트 갱신
   updateCategoryChart(categorySum);
   updateFixedVariableChart(fixed, variable);
+  updateDailyChart(dailyExpense);
   // 조언(패턴/카테고리/예산) 갱신
   updateAdvice(total, fixed, variable, categorySum);
 }
+
 
 // 차트 함수(예시, 기존 코드 재활용)
 function updateCategoryChart(categories) {
@@ -214,3 +208,9 @@ function daysInMonth(ym) {
   const [y, m] = ym.split('-').map(Number);
   return new Date(y, m, 0).getDate();
 }
+
+function daysInMonth(ym) {
+  const [y, m] = ym.split('-').map(Number);
+  return new Date(y, m, 0).getDate();
+}
+
