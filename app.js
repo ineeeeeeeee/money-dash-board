@@ -72,19 +72,31 @@ function updateAnalysis() {
   // 총지출, 고정/변동지출, 카테고리별 합계 계산
   let total = 0, fixed = 0, variable = 0;
   let categorySum = {};
-  // [교체] 월별 실제 일수만큼 배열 생성
+
+// 월별 실제 일수 계산 함수 (한 번만 선언)
 function daysInMonth(ym) {
   const [y, m] = ym.split('-').map(Number);
   return new Date(y, m, 0).getDate();
 }
 
+// updateAnalysis 함수 내에서
 const days = daysInMonth(currentMonth);
 let dailyExpense = Array(days).fill(0);
 
 filtered.forEach(r => {
   const amount = Number(r['금액(원)']) || 0;
-  const day = Number(r['날짜'].split('-')[2]);
-  if (day && day <= days) dailyExpense[day - 1] += amount;
+  const dateStr = r['날짜'];
+  let day = 0;
+  if (dateStr && typeof dateStr === 'string') {
+    // YYYY-MM-DD 형식만 허용
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      day = parseInt(parts[2], 10);
+    }
+  }
+  if (day > 0 && day <= days) {
+    dailyExpense[day - 1] += amount;
+  }
 });
 updateDailyChart(dailyExpense);
 
