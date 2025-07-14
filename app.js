@@ -130,7 +130,7 @@ function updateFixedVariableChart(fixed, variable) {
   charts.fixedVariable = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ['고정지출', '변동지출'],
+      labels: ['고정지출', '변동지출'], // [여기!]
       datasets: [{
         data: [fixed, variable],
         backgroundColor: [chartColors[0], chartColors[1]],
