@@ -72,11 +72,22 @@ function updateAnalysis() {
   // 총지출, 고정/변동지출, 카테고리별 합계 계산
   let total = 0, fixed = 0, variable = 0;
   let categorySum = {};
-  let dailyExpense = Array(31).fill(0);
-  filtered.forEach(r => {
-    const amount = Number(r['금액(원)']) || 0;
-    total += amount;
-    if (r['고정지출 여부'] === 'O') fixed += amount;
+  // [교체] 월별 실제 일수만큼 배열 생성
+function daysInMonth(ym) {
+  const [y, m] = ym.split('-').map(Number);
+  return new Date(y, m, 0).getDate();
+}
+
+const days = daysInMonth(currentMonth);
+let dailyExpense = Array(days).fill(0);
+
+filtered.forEach(r => {
+  const amount = Number(r['금액(원)']) || 0;
+  const day = Number(r['날짜'].split('-')[2]);
+  if (day && day <= days) dailyExpense[day - 1] += amount;
+});
+updateDailyChart(dailyExpense);
+
     else variable += amount;
     const cate = r['카테고리'];
     if (!categorySum[cate]) categorySum[cate] = 0;
@@ -91,7 +102,6 @@ function updateAnalysis() {
   // 차트 갱신
   updateCategoryChart(categorySum);
   updateFixedVariableChart(fixed, variable);
-  updateDailyChart(dailyExpense.slice(0, daysInMonth(currentMonth)));
   // 조언(패턴/카테고리/예산) 갱신
   updateAdvice(total, fixed, variable, categorySum);
 }
