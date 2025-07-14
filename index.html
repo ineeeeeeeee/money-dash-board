@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지출 분석 대시보드</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="dashboard-header">
+            <h1>개인별 지출 분석 대시보드</h1>
+            <p class="text-secondary">구글 시트 지출 데이터 기반 개인화 분석 및 조언</p>
+        </header>
+
+        <!-- 메인 컨트롤 패널 -->
+        <div class="card control-panel">
+            <div class="card__body">
+                <div class="controls-grid">
+                    <div class="form-group">
+                        <label for="consumerSelect" class="form-label">소비자 선택</label>
+                        <select id="consumerSelect" class="form-control">
+                            <option value="">소비자를 선택해주세요</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="monthSelect" class="form-label">분석 월</label>
+                        <select id="monthSelect" class="form-control">
+                            <option value="">월을 선택해주세요</option>
+                        </select>
+                    </div>
+                    <div class="summary-info">
+                        <div class="summary-item">
+                            <span class="summary-label">총 지출</span>
+                            <span id="totalExpense" class="summary-value">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">고정지출</span>
+                            <span id="fixedExpense" class="summary-value">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">변동지출</span>
+                            <span id="variableExpense" class="summary-value">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 개인별 지출 분석 섹션 -->
+        <div class="analysis-grid">
+            <div class="card chart-card">
+                <div class="card__body">
+                    <h3>카테고리별 지출 비율</h3>
+                    <div class="chart-container">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card chart-card">
+                <div class="card__body">
+                    <h3>고정지출 vs 변동지출</h3>
+                    <div class="chart-container">
+                        <canvas id="fixedVariableChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card chart-card">
+                <div class="card__body">
+                    <h3>일별 지출 흐름</h3>
+                    <div class="chart-container">
+                        <canvas id="dailyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 지출 조언 섹션 -->
+        <div class="card advice-section">
+            <div class="card__body">
+                <h3>개인화 지출 조언</h3>
+                <div class="advice-grid">
+                    <div class="advice-item">
+                        <h4>지출 패턴 분석</h4>
+                        <div id="patternAnalysis" class="advice-content">
+                            소비자와 월을 선택하면 지출 패턴 분석이 표시됩니다.
+                        </div>
+                    </div>
+                    <div class="advice-item">
+                        <h4>카테고리별 평가</h4>
+                        <div id="categoryEvaluation" class="advice-content">
+                            카테고리별 지출 수준과 조언이 표시됩니다.
+                        </div>
+                    </div>
+                    <div class="advice-item">
+                        <h4>예산 구성 제안</h4>
+                        <div id="budgetSuggestion" class="advice-content">
+                            개인화된 예산 구성 제안이 표시됩니다.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 비교 분석 섹션 -->
+        <div class="comparison-grid">
+            <div class="card chart-card">
+                <div class="card__body">
+                    <h3>4명 월별 지출 비교</h3>
+                    <div class="chart-container">
+                        <canvas id="comparisonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card chart-card">
+                <div class="card__body">
+                    <h3>카테고리별 평균 지출 비교</h3>
+                    <div class="chart-container">
+                        <canvas id="categoryComparisonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
